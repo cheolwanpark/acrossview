@@ -1,0 +1,18 @@
+[project]
+name = "forif-hackathon"
+version = "0.1.0"
+description = "Korean news article crawler"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "httpx>=0.28.0",
+    "beautifulsoup4>=4.12.0",
+    "lxml>=5.0.0",
+    "trafilatura>=2.0.0",
+    "aiosqlite>=0.20.0",
+    "tqdm>=4.67.0",
+    "tenacity>=9.0.0",
+]
+
+[project.scripts]
+news-crawler = "src.main:main"
