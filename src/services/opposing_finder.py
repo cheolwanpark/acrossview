@@ -5,9 +5,13 @@ import logging
 from collections.abc import Callable
 from dataclasses import dataclass, field
 
-from .article_ranker import ArticleRankerService, RankedArticle
 from .embedding import EmbeddingService
 from .keyword_generator import KeywordGeneratorService
+from .objection_extractor import (
+    ArticleReference,
+    ObjectionExtractorService,
+    ObjectionResult,
+)
 from .vector_db import SearchResult, VectorDBService
 
 logger = logging.getLogger(__name__)
@@ -28,7 +32,7 @@ class OpposingViewResult:
 
     input_summary: str
     keywords_used: list[str]
-    articles: list[RankedArticle]
+    objections: list[ObjectionResult]
     total_candidates_found: int = 0
     keyword_results: list[KeywordSearchResult] = field(default_factory=list)
     errors: list[str] = field(default_factory=list)
@@ -52,7 +56,7 @@ class OpposingViewFinder:
         embedding_service: EmbeddingService,
         vector_db: VectorDBService,
         keyword_generator: KeywordGeneratorService,
-        article_ranker: ArticleRankerService,
+        objection_extractor: ObjectionExtractorService,
     ):
         """Initialize the opposing view finder.
 
@@ -60,12 +64,12 @@ class OpposingViewFinder:
             embedding_service: Service for generating embeddings.
             vector_db: Service for vector search.
             keyword_generator: Service for generating opposing keywords.
-            article_ranker: Service for ranking articles.
+            objection_extractor: Service for extracting objections.
         """
         self.embedding = embedding_service
         self.vector_db = vector_db
         self.keyword_gen = keyword_generator
-        self.ranker = article_ranker
+        self.extractor = objection_extractor
 
     async def _search_keyword(self, keyword: str) -> KeywordSearchResult:
         """Search for articles matching a keyword.
@@ -143,7 +147,7 @@ class OpposingViewFinder:
             return OpposingViewResult(
                 input_summary="키워드 생성 실패",
                 keywords_used=[],
-                articles=[],
+                objections=[],
                 errors=[f"키워드 생성 중 오류 발생: {e}"],
             )
 
@@ -152,7 +156,7 @@ class OpposingViewFinder:
             return OpposingViewResult(
                 input_summary=keyword_result.topic_summary,
                 keywords_used=[],
-                articles=[],
+                objections=[],
                 errors=["생성된 키워드가 없습니다."],
             )
 
@@ -180,7 +184,7 @@ class OpposingViewFinder:
             return OpposingViewResult(
                 input_summary=keyword_result.topic_summary,
                 keywords_used=keywords,
-                articles=[],
+                objections=[],
                 total_candidates_found=0,
                 keyword_results=keyword_results,
                 errors=["검색 결과가 없습니다. 기사 인덱싱이 필요할 수 있습니다."],
@@ -191,30 +195,21 @@ class OpposingViewFinder:
             : self.PRE_FILTER_LIMIT
         ]
 
-        # Notify: ranking start
+        # Notify: extraction start
         if on_ranking_start:
             on_ranking_start(len(candidates))
 
-        # Step 5: LLM ranking for final 5
+        # Step 5: LLM extraction for objections with quotes
         try:
-            ranked = await self.ranker.rank_articles(input_text, candidates)
+            objections = await self.extractor.extract_objections(input_text, candidates)
         except Exception as e:
-            errors.append(f"기사 순위 결정 중 오류: {e}")
-            # Fallback: return top 5 by distance
-            ranked = [
-                RankedArticle(
-                    article_id=c.article_id,
-                    title=c.title or "제목 없음",
-                    relevance_score=max(0.0, 1.0 - c.distance),
-                    opposition_reason="벡터 검색 기반 관련 기사",
-                )
-                for c in candidates[:5]
-            ]
+            errors.append(f"반박 추출 중 오류: {e}")
+            objections = []
 
         return OpposingViewResult(
             input_summary=keyword_result.topic_summary,
             keywords_used=keywords,
-            articles=ranked,
+            objections=objections,
             total_candidates_found=total_candidates,
             keyword_results=keyword_results,
             errors=errors,

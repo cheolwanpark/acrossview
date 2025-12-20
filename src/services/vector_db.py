@@ -21,6 +21,7 @@ class SearchResult:
     body: str | None
     media_outlet: str | None
     date: str | None
+    url: str | None
 
 
 class VectorDBService:
@@ -192,7 +193,8 @@ class VectorDBService:
                 a.title_crawled,
                 a.body_crawled,
                 a.media_outlet,
-                a.date
+                a.date,
+                a.url
             FROM (
                 SELECT rowid, distance
                 FROM vss_articles
@@ -213,6 +215,7 @@ class VectorDBService:
                 body=row[3],
                 media_outlet=row[4],
                 date=row[5],
+                url=row[6],
             )
             for row in results
         ]

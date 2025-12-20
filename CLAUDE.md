@@ -134,7 +134,7 @@ src/
     ├── embedding.py          # Google GenAI embeddings
     ├── vector_db.py          # sqlite-vss vector search
     ├── keyword_generator.py  # LLM keyword generation
-    ├── article_ranker.py     # LLM article ranking
+    ├── objection_extractor.py # LLM objection extraction with quotes
     └── opposing_finder.py    # Orchestrator
 
 scripts/
@@ -174,9 +174,30 @@ User Input (multiline text)
     ↓
 [3] Pre-filter top 15 by distance
     ↓
-[4] LLM ranking for final 5 (gemini-2.5-flash-lite)
+[4] LLM extraction (gemini-2.5-flash-lite)
+    ├── Extract claims from input text
+    ├── Generate objections with article quotes
+    └── Validate quotes against source articles
     ↓
-[5] Display results with opposition reasoning
+[5] Display structured objections with references
+```
+
+## Output Format
+
+```python
+[
+    {
+        "exact_text": "원문에서 반박할 정확한 문장",
+        "objection": "반대 의견 (1-2문장)",
+        "reference": [
+            {
+                "title": "기사 제목",
+                "quote": "기사에서 인용한 문장",
+                "url": "https://..."
+            }
+        ]
+    }
+]
 ```
 
 ## CLI Commands

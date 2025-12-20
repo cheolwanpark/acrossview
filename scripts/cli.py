@@ -13,9 +13,9 @@ from dotenv import load_dotenv
 from tqdm import tqdm
 
 from src.config import DB_PATH
-from src.services.article_ranker import ArticleRankerService
 from src.services.embedding import EmbeddingService
 from src.services.keyword_generator import KeywordGeneratorService
+from src.services.objection_extractor import ObjectionExtractorService
 from src.services.opposing_finder import OpposingViewFinder
 from src.services.vector_db import SearchResult, VectorDBService
 
@@ -167,7 +167,7 @@ async def cmd_find(args: argparse.Namespace) -> int:
     try:
         embedding_service = EmbeddingService()
         keyword_generator = KeywordGeneratorService()
-        article_ranker = ArticleRankerService()
+        objection_extractor = ObjectionExtractorService()
     except ValueError as e:
         print(f"\n❌ Error: {e}")
         return 1
@@ -206,14 +206,14 @@ async def cmd_find(args: argparse.Namespace) -> int:
                     print(f"      ... and {len(results) - 5} more")
 
         def on_ranking_start(candidate_count: int) -> None:
-            print(f"\n⚖️  Ranking {candidate_count} candidates with LLM...")
+            print(f"\n⚖️  Extracting objections from {candidate_count} candidates...")
 
         # Create finder and run
         finder = OpposingViewFinder(
             embedding_service=embedding_service,
             vector_db=vector_db,
             keyword_generator=keyword_generator,
-            article_ranker=article_ranker,
+            objection_extractor=objection_extractor,
         )
 
         result = await finder.find_opposing_views(
@@ -225,7 +225,7 @@ async def cmd_find(args: argparse.Namespace) -> int:
         )
 
         # Display final results
-        print_header("Final Results: Top 5 Opposing Articles")
+        print_header("반박 결과")
 
         print(f"\n📊 Total unique candidates: {result.total_candidates_found}")
 
@@ -234,16 +234,22 @@ async def cmd_find(args: argparse.Namespace) -> int:
             for error in result.errors:
                 print(f"   - {error}")
 
-        if not result.articles:
-            print("\n❌ No opposing articles found.")
+        if not result.objections:
+            print("\n❌ 반박할 내용을 찾지 못했습니다.")
             return 0
 
-        print()
-        for i, article in enumerate(result.articles, 1):
+        for i, obj in enumerate(result.objections, 1):
             print_separator()
-            print(f"\n{i}. [{article.article_id}] {article.title}")
-            print(f"\n   📰 Opposition: {article.opposition_reason}")
-            print(f"   📈 Relevance: {article.relevance_score:.2f}")
+            print(f"\n{i}. 원문:")
+            print(f"   \"{obj.exact_text}\"")
+            print(f"\n   💬 반박:")
+            print(f"   {obj.objection}")
+            print(f"\n   📚 참고:")
+            for ref in obj.reference:
+                print(f"   - [{ref.title}]")
+                print(f"     \"{ref.quote}\"")
+                if ref.url:
+                    print(f"     {ref.url}")
 
         print_separator()
         print()
