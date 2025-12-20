@@ -1,0 +1,21 @@
+{
+  "manifest_version": 3,
+  "name": "다양한 관점 찾기",
+  "version": "1.0.0",
+  "description": "네이버 뉴스 기사에서 다양한 관점을 찾아 하이라이트합니다",
+  "permissions": [],
+  "host_permissions": [
+    "http://localhost:8000/*"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": ["*://n.news.naver.com/mnews/article/*"],
+      "js": ["content.js"],
+      "css": ["styles.css"],
+      "run_at": "document_idle"
+    }
+  ]
+}

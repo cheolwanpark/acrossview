@@ -49,7 +49,7 @@ class DiverseViewFinder:
     """Orchestrates the full diverse view finding pipeline."""
 
     MAX_ARTICLES_PER_KEYWORD = 10
-    PRE_FILTER_LIMIT = 15
+    PRE_FILTER_LIMIT = 10
 
     def __init__(
         self,
@@ -164,17 +164,20 @@ class DiverseViewFinder:
         if on_keywords_generated:
             on_keywords_generated(keyword_result.topic_summary, keywords)
 
-        # Step 2: Search for each keyword sequentially for better observability
-        keyword_results: list[KeywordSearchResult] = []
-        for keyword in keywords:
-            if on_keyword_search_start:
+        # Step 2: Search for all keywords in parallel for better performance
+        if on_keyword_search_start:
+            for keyword in keywords:
                 on_keyword_search_start(keyword)
 
-            kw_result = await self._search_keyword(keyword)
-            keyword_results.append(kw_result)
+        # Run all keyword searches concurrently
+        keyword_results = await asyncio.gather(
+            *[self._search_keyword(keyword) for keyword in keywords]
+        )
 
-            if on_keyword_search_complete:
-                on_keyword_search_complete(keyword, kw_result.results)
+        # Notify completion for each
+        if on_keyword_search_complete:
+            for kw_result in keyword_results:
+                on_keyword_search_complete(kw_result.keyword, kw_result.results)
 
         # Step 3: Deduplicate by article_id, keep lowest distance
         deduplicated = self._deduplicate_results(keyword_results)

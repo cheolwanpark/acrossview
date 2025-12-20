@@ -1,0 +1,259 @@
+/* ========================================
+   TOAST NOTIFICATIONS
+   ======================================== */
+
+.dvf-toast-container {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  z-index: 2147483647;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+.dvf-toast {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 20px;
+  border-radius: 10px;
+  background: #1a1a2e;
+  color: #fff;
+  font-size: 14px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+  animation: dvf-slide-in 0.3s ease-out;
+  max-width: 320px;
+}
+
+.dvf-toast-loading {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.dvf-toast-success {
+  background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+}
+
+.dvf-toast-error {
+  background: linear-gradient(135deg, #eb3349 0%, #f45c43 100%);
+}
+
+.dvf-toast-info {
+  background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+}
+
+.dvf-toast-icon {
+  font-size: 18px;
+  flex-shrink: 0;
+}
+
+.dvf-toast-message {
+  flex: 1;
+  line-height: 1.4;
+}
+
+@keyframes dvf-slide-in {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes dvf-slide-out {
+  from {
+    transform: translateX(0);
+    opacity: 1;
+  }
+  to {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+}
+
+/* Spinner for loading state */
+.dvf-spinner {
+  width: 18px;
+  height: 18px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: dvf-spin 0.8s linear infinite;
+}
+
+@keyframes dvf-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* ========================================
+   TEXT HIGHLIGHT
+   ======================================== */
+
+.dvf-highlight {
+  background: linear-gradient(120deg, #fef3c7 0%, #fde68a 100%);
+  padding: 2px 4px;
+  margin: 0 -2px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  position: relative;
+}
+
+.dvf-highlight:hover {
+  background: linear-gradient(120deg, #fde68a 0%, #fbbf24 100%);
+  box-shadow: 0 2px 8px rgba(251, 191, 36, 0.4);
+}
+
+/* ========================================
+   OVERLAY BACKDROP
+   ======================================== */
+
+.dvf-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 2147483645;
+  animation: dvf-overlay-in 0.2s ease-out;
+}
+
+@keyframes dvf-overlay-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* ========================================
+   TOOLTIP / MODAL
+   ======================================== */
+
+.dvf-tooltip {
+  position: fixed;
+  max-width: 520px;
+  width: 90%;
+  padding: 0;
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 25px 80px rgba(0, 0, 0, 0.3);
+  z-index: 2147483646;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-size: 14px;
+  line-height: 1.6;
+  overflow: hidden;
+  max-height: 80vh;
+  overflow-y: auto;
+}
+
+/* Centered modal positioning */
+.dvf-tooltip-centered {
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  animation: dvf-modal-in 0.25s ease-out;
+}
+
+@keyframes dvf-modal-in {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+}
+
+.dvf-tooltip-header {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: #fff;
+  padding: 16px 20px;
+  font-weight: 600;
+  font-size: 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
+
+.dvf-tooltip-close {
+  background: rgba(255, 255, 255, 0.2);
+  border: none;
+  color: #fff;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s;
+}
+
+.dvf-tooltip-close:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+.dvf-tooltip-content {
+  padding: 16px 18px;
+  color: #374151;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.dvf-tooltip-refs {
+  padding: 14px 18px;
+  background: #f9fafb;
+}
+
+.dvf-tooltip-refs-header {
+  font-weight: 600;
+  color: #4b5563;
+  margin-bottom: 10px;
+  font-size: 13px;
+}
+
+.dvf-tooltip-ref {
+  margin-bottom: 12px;
+  padding-left: 12px;
+  border-left: 3px solid #667eea;
+}
+
+.dvf-tooltip-ref:last-child {
+  margin-bottom: 0;
+}
+
+.dvf-tooltip-ref-title {
+  color: #667eea;
+  text-decoration: none;
+  font-weight: 500;
+  display: block;
+  margin-bottom: 4px;
+}
+
+.dvf-tooltip-ref-title:hover {
+  text-decoration: underline;
+}
+
+.dvf-tooltip-ref-quote {
+  color: #6b7280;
+  font-size: 13px;
+  margin: 0;
+  font-style: italic;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
