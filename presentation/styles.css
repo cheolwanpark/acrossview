@@ -1,0 +1,524 @@
+/* === Reset & Variables === */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+:root {
+  --bg-cream: #faf9f6;
+  --text-black: #1a1a1a;
+  --text-gray: #666;
+  --accent-blue: #7eb8da;
+  --accent-blue-light: rgba(126, 184, 218, 0.35);
+  --border-light: #e0e0e0;
+}
+
+html, body {
+  height: 100%;
+  font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  background: #0a0a0a;
+  color: var(--text-black);
+  overflow: hidden;
+}
+
+/* === Presentation Container === */
+.presentation {
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* === Slide Base === */
+.slide {
+  position: absolute;
+  width: min(100vw, calc(100vh * 16 / 9));
+  height: min(100vh, calc(100vw * 9 / 16));
+  background: var(--bg-cream);
+  display: none;
+  overflow: hidden;
+}
+
+.slide.active {
+  display: block;
+}
+
+.slide-content {
+  width: 100%;
+  height: 100%;
+  padding: 60px 100px;
+  position: relative;
+}
+
+/* === Decorative Blobs === */
+.blob {
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.blob-1 {
+  width: 400px;
+  height: 400px;
+  background: radial-gradient(ellipse at center, var(--accent-blue-light) 0%, transparent 70%);
+  filter: blur(60px);
+  top: -100px;
+  right: -50px;
+}
+
+.blob-2 {
+  width: 300px;
+  height: 300px;
+  background: radial-gradient(ellipse at center, var(--accent-blue-light) 0%, transparent 70%);
+  filter: blur(50px);
+  bottom: -50px;
+  left: 20%;
+}
+
+.blob-3 {
+  width: 350px;
+  height: 350px;
+  background: radial-gradient(ellipse at center, var(--accent-blue-light) 0%, transparent 70%);
+  filter: blur(55px);
+  bottom: 10%;
+  right: 5%;
+}
+
+/* === Arrow Decoration === */
+.arrow-deco {
+  font-size: 14px;
+  color: var(--text-black);
+  letter-spacing: 2px;
+}
+
+/* === Slide Indicator === */
+.slide-indicator {
+  position: fixed;
+  bottom: 20px;
+  right: 30px;
+  font-size: 14px;
+  color: #999;
+  z-index: 100;
+  background: rgba(255,255,255,0.8);
+  padding: 5px 12px;
+  border-radius: 20px;
+}
+
+/* ================================
+   SLIDE 1: TITLE
+================================ */
+.slide-title .slide-content {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding-bottom: 120px;
+}
+
+.slide-title .top-right {
+  position: absolute;
+  top: 60px;
+  right: 100px;
+  font-size: 18px;
+}
+
+.slide-title .top-right strong {
+  font-weight: 600;
+}
+
+.slide-title .arrow-deco {
+  position: absolute;
+  top: 60px;
+  left: 100px;
+}
+
+.slide-title h1 {
+  font-size: 140px;
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: -3px;
+}
+
+/* ================================
+   SLIDE 2: TABLE OF CONTENTS
+================================ */
+.slide-toc h2 {
+  font-size: 42px;
+  font-weight: 700;
+  margin-bottom: 50px;
+}
+
+.toc-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 30px 100px;
+  max-width: 900px;
+}
+
+.toc-item {
+  display: flex;
+  align-items: baseline;
+  gap: 20px;
+}
+
+.toc-number {
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--accent-blue);
+  min-width: 30px;
+}
+
+.toc-text {
+  font-size: 22px;
+  font-weight: 500;
+  line-height: 1.4;
+}
+
+/* ================================
+   SLIDE 3: SECTION DIVIDER
+================================ */
+.slide-section .slide-content {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding-bottom: 120px;
+}
+
+.slide-section .section-number {
+  font-size: 180px;
+  font-weight: 700;
+  color: var(--accent-blue);
+  line-height: 1;
+  opacity: 0.9;
+}
+
+.slide-section h2 {
+  font-size: 100px;
+  font-weight: 700;
+  line-height: 1.1;
+}
+
+.slide-section .top-right {
+  position: absolute;
+  top: 60px;
+  right: 100px;
+  font-size: 18px;
+}
+
+.slide-section .arrow-deco {
+  position: absolute;
+  top: 60px;
+  left: 100px;
+}
+
+/* ================================
+   SLIDE 4: OVERVIEW STYLE
+================================ */
+.slide-overview h2 {
+  font-size: 80px;
+  font-weight: 700;
+  margin-bottom: 30px;
+}
+
+.slide-overview .content-right {
+  position: absolute;
+  right: 100px;
+  bottom: 150px;
+  max-width: 500px;
+  font-size: 20px;
+  line-height: 1.7;
+}
+
+.slide-overview .content-right strong {
+  font-weight: 600;
+}
+
+.slide-overview .arrow-deco {
+  position: absolute;
+  bottom: 150px;
+  left: 100px;
+}
+
+/* ================================
+   SLIDE 5: DIAGRAM (3-Column Grid)
+================================ */
+.slide-diagram h2 {
+  font-size: 36px;
+  font-weight: 700;
+  margin-bottom: 40px;
+  text-align: center;
+}
+
+.diagram-container {
+  border: 1px solid var(--border-light);
+  border-radius: 8px;
+  padding: 25px 40px;
+  margin-bottom: 30px;
+  text-align: center;
+  font-size: 20px;
+  font-weight: 600;
+  background: #fff;
+}
+
+.diagram-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+}
+
+.diagram-column {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.diagram-box {
+  border: 1px solid var(--border-light);
+  border-radius: 8px;
+  padding: 18px 20px;
+  text-align: center;
+  font-size: 18px;
+  font-weight: 500;
+  background: #fff;
+}
+
+.diagram-box.fail {
+  color: var(--text-gray);
+}
+
+/* ================================
+   SLIDE 6: CONTENT WITH BULLETS
+================================ */
+.slide-content-bullets {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 60px;
+  height: 100%;
+  align-items: center;
+}
+
+.content-left h2 {
+  font-size: 48px;
+  font-weight: 700;
+  line-height: 1.3;
+  margin-bottom: 30px;
+}
+
+.content-left p {
+  font-size: 18px;
+  line-height: 1.7;
+  margin-bottom: 25px;
+  color: var(--text-gray);
+}
+
+.bullet-list {
+  list-style: none;
+  padding: 0;
+}
+
+.bullet-list li {
+  font-size: 18px;
+  line-height: 1.6;
+  padding-left: 25px;
+  position: relative;
+  margin-bottom: 12px;
+}
+
+.bullet-list li::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 10px;
+  width: 8px;
+  height: 8px;
+  background: var(--accent-blue);
+}
+
+.content-right-box {
+  background: #f0f0f0;
+  border-radius: 12px;
+  height: 400px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-gray);
+}
+
+/* ================================
+   SLIDE 7: FLOW DIAGRAM
+================================ */
+.slide-flow h2 {
+  font-size: 36px;
+  font-weight: 700;
+  margin-bottom: 50px;
+  text-align: center;
+}
+
+.flow-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 30px;
+}
+
+.flow-box {
+  border: 1px solid var(--border-light);
+  border-radius: 8px;
+  padding: 30px 40px;
+  text-align: center;
+  background: #fff;
+  min-width: 200px;
+}
+
+.flow-box .number {
+  font-size: 16px;
+  color: var(--accent-blue);
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.flow-box .label {
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.flow-arrow {
+  font-size: 28px;
+  color: var(--text-gray);
+}
+
+.flow-result {
+  margin-top: 40px;
+  text-align: center;
+}
+
+.flow-result .result-box {
+  display: inline-block;
+  background: var(--accent-blue-light);
+  border: 2px solid var(--accent-blue);
+  border-radius: 12px;
+  padding: 25px 50px;
+  font-size: 22px;
+  font-weight: 600;
+}
+
+/* ================================
+   SLIDE 8: CLOSING
+================================ */
+.slide-closing .slide-content {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+
+.slide-closing blockquote {
+  font-size: 36px;
+  line-height: 1.6;
+  max-width: 800px;
+  margin-bottom: 60px;
+}
+
+.slide-closing blockquote strong {
+  color: var(--accent-blue);
+  font-weight: 700;
+}
+
+.roadmap {
+  display: flex;
+  align-items: center;
+  gap: 25px;
+  margin-bottom: 50px;
+}
+
+.roadmap-item {
+  background: #fff;
+  border: 1px solid var(--border-light);
+  border-radius: 8px;
+  padding: 20px 30px;
+  text-align: center;
+}
+
+.roadmap-item.current {
+  border-color: var(--accent-blue);
+  border-width: 2px;
+}
+
+.roadmap-item .phase {
+  font-size: 12px;
+  color: var(--text-gray);
+  margin-bottom: 5px;
+}
+
+.roadmap-item .desc {
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.roadmap-arrow {
+  color: var(--text-gray);
+  font-size: 20px;
+}
+
+.logo-footer {
+  font-size: 32px;
+  font-weight: 700;
+  color: var(--accent-blue);
+}
+
+/* ================================
+   PRINT STYLES
+================================ */
+@page {
+  size: 1920px 1080px;
+  margin: 0;
+}
+
+@media print {
+  html, body {
+    width: 1920px;
+    height: auto;
+    overflow: visible;
+    background: white;
+  }
+
+  body {
+    print-color-adjust: exact;
+    -webkit-print-color-adjust: exact;
+  }
+
+  .presentation {
+    width: auto;
+    height: auto;
+    display: block;
+    position: static;
+  }
+
+  .slide {
+    position: relative !important;
+    display: block !important;
+    width: 1920px !important;
+    height: 1080px !important;
+    page-break-after: always;
+    break-after: page;
+    page-break-inside: avoid;
+    break-inside: avoid;
+  }
+
+  .slide:last-child {
+    page-break-after: auto;
+    break-after: auto;
+  }
+
+  .blob {
+    filter: none;
+    opacity: 0.5;
+  }
+
+  .slide-indicator {
+    display: none;
+  }
+}

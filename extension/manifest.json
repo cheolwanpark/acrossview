@@ -12,7 +12,10 @@
   },
   "content_scripts": [
     {
-      "matches": ["*://n.news.naver.com/mnews/article/*"],
+      "matches": [
+        "*://n.news.naver.com/article/*",
+        "*://n.news.naver.com/mnews/article/*"
+      ],
       "js": ["content.js"],
       "css": ["styles.css"],
       "run_at": "document_idle"

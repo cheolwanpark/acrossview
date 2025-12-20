@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AcrossView - 관점을 연결하다</title>
+  <link rel="preconnect" href="https://cdn.jsdelivr.net">
+  <link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="presentation">
+
+    <!-- Slide 1: Title -->
+    <section class="slide slide-title" id="slide-1">
+      <div class="blob blob-1"></div>
+      <div class="slide-content">
+        <span class="arrow-deco">───→</span>
+        <p class="top-right">관점을 <strong>연결</strong>하다</p>
+        <h1>Across<br>View</h1>
+      </div>
+    </section>
+
+    <!-- Slide 2: Table of Contents -->
+    <section class="slide slide-toc" id="slide-2">
+      <div class="blob blob-3"></div>
+      <div class="slide-content">
+        <h2>Table of contents</h2>
+        <div class="toc-grid">
+          <div class="toc-item">
+            <span class="toc-number">01</span>
+            <span class="toc-text">문제 정의<br>필터버블과 단절</span>
+          </div>
+          <div class="toc-item">
+            <span class="toc-number">05</span>
+            <span class="toc-text">솔루션 프로세스<br>쟁점 하이라이팅</span>
+          </div>
+          <div class="toc-item">
+            <span class="toc-number">02</span>
+            <span class="toc-text">현상 분석<br>같은 뉴스, 다른 세상</span>
+          </div>
+          <div class="toc-item">
+            <span class="toc-number">06</span>
+            <span class="toc-text">데모 시연<br>실제 작동 방식</span>
+          </div>
+          <div class="toc-item">
+            <span class="toc-number">03</span>
+            <span class="toc-text">기존 한계<br>왜 실패했나</span>
+          </div>
+          <div class="toc-item">
+            <span class="toc-number">07</span>
+            <span class="toc-text">기대 효과<br>연결의 회복</span>
+          </div>
+          <div class="toc-item">
+            <span class="toc-number">04</span>
+            <span class="toc-text">솔루션 소개<br>AcrossView 접근</span>
+          </div>
+          <div class="toc-item">
+            <span class="toc-number">08</span>
+            <span class="toc-text">확장 가능성<br>마무리</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Slide 3: Section Divider - Problem -->
+    <section class="slide slide-section" id="slide-3">
+      <div class="blob blob-3"></div>
+      <div class="slide-content">
+        <span class="arrow-deco">───→</span>
+        <p class="top-right">같은 뉴스, <strong>다른 세상</strong></p>
+        <div class="section-number">01</div>
+        <h2>문제 정의</h2>
+      </div>
+    </section>
+
+    <!-- Slide 4: Overview - Filter Bubble -->
+    <section class="slide slide-overview" id="slide-4">
+      <div class="blob blob-2"></div>
+      <div class="slide-content">
+        <h2>필터버블</h2>
+        <span class="arrow-deco">───→</span>
+        <div class="content-right">
+          <p>알고리즘이 <strong>내 취향에 맞는 정보만</strong> 보여주고, 다른 관점은 아예 보이지 않게 만드는 구조입니다.</p>
+          <br>
+          <p>유튜브는 시청 기록 기반으로 비슷한 영상만 추천하고, 네이버 뉴스는 클릭 패턴에 따라 같은 논조만 보여줍니다.</p>
+          <br>
+          <p>결과적으로 우리는 <strong>각자 다른 현실</strong>에서 살게 됩니다.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Slide 5: Diagram - Existing Limitations -->
+    <section class="slide slide-diagram" id="slide-5">
+      <div class="blob blob-1"></div>
+      <div class="slide-content">
+        <h2>기존 솔루션의 한계</h2>
+        <div class="diagram-container">
+          기존 필터버블 해결 시도와 그 결과
+        </div>
+        <div class="diagram-grid">
+          <div class="diagram-column">
+            <div class="diagram-box">반대 기사 추천</div>
+            <div class="diagram-box">알고리즘 강제 노출</div>
+            <div class="diagram-box">악마의 변호인</div>
+          </div>
+          <div class="diagram-column">
+            <div class="diagram-box fail">클릭하지 않음</div>
+            <div class="diagram-box fail">피로감 + 이탈</div>
+            <div class="diagram-box fail">설득 = 반발</div>
+          </div>
+          <div class="diagram-column">
+            <div class="diagram-box fail">관심 없는 콘텐츠</div>
+            <div class="diagram-box fail">사용자 경험 악화</div>
+            <div class="diagram-box fail">심리적 저항</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Slide 6: Content with Bullets - Solution -->
+    <section class="slide" id="slide-6">
+      <div class="blob blob-2"></div>
+      <div class="slide-content slide-content-bullets">
+        <div class="content-left">
+          <h2>AcrossView의<br>접근 방식</h2>
+          <p>반대 의견을 강요하지 않습니다. 대신, 다양한 관점으로 가는 문을 만들어 둡니다.</p>
+          <ul class="bullet-list">
+            <li>쟁점이 될 수 있는 문장을 자동 탐지</li>
+            <li>하이라이트로 시각적 표시</li>
+            <li>클릭 시 다양한 관점 펼침</li>
+            <li>선택은 사용자에게, 접근성은 알고리즘이</li>
+          </ul>
+        </div>
+        <div class="content-right-box">
+          데모 스크린샷
+        </div>
+      </div>
+    </section>
+
+    <!-- Slide 7: Flow Diagram - Process -->
+    <section class="slide slide-flow" id="slide-7">
+      <div class="blob blob-3"></div>
+      <div class="slide-content">
+        <h2>쟁점 하이라이팅 프로세스</h2>
+        <div class="flow-container">
+          <div class="flow-box">
+            <div class="number">01</div>
+            <div class="label">쟁점 탐지</div>
+          </div>
+          <span class="flow-arrow">→</span>
+          <div class="flow-box">
+            <div class="number">02</div>
+            <div class="label">하이라이트 표시</div>
+          </div>
+          <span class="flow-arrow">→</span>
+          <div class="flow-box">
+            <div class="number">03</div>
+            <div class="label">클릭 시 펼침</div>
+          </div>
+          <span class="flow-arrow">→</span>
+          <div class="flow-box">
+            <div class="number">04</div>
+            <div class="label">다양한 관점 제시</div>
+          </div>
+        </div>
+        <div class="flow-result">
+          <div class="result-box">
+            사용자가 선택 → 연결의 기회
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Slide 8: Closing -->
+    <section class="slide slide-closing" id="slide-8">
+      <div class="blob blob-1"></div>
+      <div class="slide-content">
+        <div class="roadmap">
+          <div class="roadmap-item current">
+            <div class="phase">Phase 1</div>
+            <div class="desc">뉴스/웹</div>
+          </div>
+          <span class="roadmap-arrow">→</span>
+          <div class="roadmap-item">
+            <div class="phase">Phase 2</div>
+            <div class="desc">언론사/포털</div>
+          </div>
+          <span class="roadmap-arrow">→</span>
+          <div class="roadmap-item">
+            <div class="phase">Phase 3</div>
+            <div class="desc">SNS/영상</div>
+          </div>
+        </div>
+        <blockquote>
+          이 서비스는 관점을 추천하지 않습니다.<br>
+          관점과 관점 사이를 <strong>연결</strong>합니다.
+        </blockquote>
+        <div class="logo-footer">AcrossView</div>
+      </div>
+    </section>
+
+  </div>
+
+  <!-- Slide Indicator -->
+  <div class="slide-indicator">
+    <span class="current-slide">1</span> / <span class="total-slides">8</span>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
