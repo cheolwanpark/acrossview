@@ -129,5 +129,92 @@ src/
 ├── crawler/
 │   └── base.py     # Crawler with trafilatura
 ├── engine.py       # Async scheduler + rate limiter
-└── main.py         # CLI entry point
+├── main.py         # CLI entry point
+└── services/       # Opposing view finder services
+    ├── embedding.py          # Google GenAI embeddings
+    ├── vector_db.py          # sqlite-vss vector search
+    ├── keyword_generator.py  # LLM keyword generation
+    ├── article_ranker.py     # LLM article ranking
+    └── opposing_finder.py    # Orchestrator
+
+scripts/
+└── cli.py          # Opposing view finder CLI
 ```
+
+---
+
+# Opposing View Finder
+
+Find articles with opposing/challenging views using vector search and LLM ranking.
+
+## Quick Start
+
+```bash
+# Set up API key
+cp .env.example .env
+# Edit .env and add your GEMINI_API_KEY
+
+# Index articles into vector DB (required once)
+uv run python scripts/cli.py index
+
+# Find opposing views
+uv run python scripts/cli.py find
+```
+
+## Pipeline Overview
+
+```
+User Input (multiline text)
+    ↓
+[1] Generate 3-5 opposing keywords (gemini-2.5-flash-lite)
+    ↓
+[2] Vector search per keyword (sqlite-vss + gemini-embedding-001)
+    ├── Max 10 articles per keyword
+    └── Deduplicate by article_id
+    ↓
+[3] Pre-filter top 15 by distance
+    ↓
+[4] LLM ranking for final 5 (gemini-2.5-flash-lite)
+    ↓
+[5] Display results with opposition reasoning
+```
+
+## CLI Commands
+
+```bash
+# Check indexing status
+uv run python scripts/cli.py status
+
+# Index articles (with rate limiting)
+uv run python scripts/cli.py index
+uv run python scripts/cli.py index --batch-size 50
+uv run python scripts/cli.py index --force  # Re-index all
+
+# Find opposing views (interactive)
+uv run python scripts/cli.py find
+```
+
+## Vector Database
+
+Uses `sqlite-vss` extension for vector similarity search:
+
+```sql
+-- Virtual table for embeddings (768-dim from gemini-embedding-001)
+CREATE VIRTUAL TABLE vss_articles USING vss0(
+    embedding(768)
+);
+-- rowid maps to articles.id
+```
+
+## Environment Variables
+
+```bash
+GEMINI_API_KEY=your-api-key  # Required for embedding and LLM
+```
+
+## Rate Limiting
+
+- **Batch size**: 100 texts per API request
+- **Batch delay**: 2 seconds between batches
+- **Retry**: Exponential backoff (2s → 4s → 8s → 16s → 32s)
+- **Max retries**: 5 attempts per batch

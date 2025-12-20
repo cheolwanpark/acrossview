@@ -35,3 +35,13 @@ RETRYABLE_STATUS_CODES = {429, 500, 502, 503, 504}
 
 # Permanent failure status codes (don't retry)
 PERMANENT_FAILURE_CODES = {403, 404, 410, 451}
+
+# Embedding settings
+EMBEDDING_MODEL = "gemini-embedding-001"
+EMBEDDING_DIM = 768
+EMBEDDING_BATCH_SIZE = 100  # API supports up to 100 texts per request
+EMBEDDING_BATCH_DELAY = 2.0  # seconds between batches for rate limiting
+
+# LLM settings
+LLM_MODEL = "gemini-2.5-flash-lite"
+LLM_MAX_RETRIES = 3
