@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""CLI for opposing view finder."""
+"""CLI for diverse view finder."""
 
 import argparse
 import asyncio
@@ -15,8 +15,8 @@ from tqdm import tqdm
 from src.config import DB_PATH
 from src.services.embedding import EmbeddingService
 from src.services.keyword_generator import KeywordGeneratorService
-from src.services.objection_extractor import ObjectionExtractorService
-from src.services.opposing_finder import OpposingViewFinder
+from src.services.objection_extractor import DifferentViewExtractorService
+from src.services.opposing_finder import DiverseViewFinder
 from src.services.vector_db import SearchResult, VectorDBService
 
 # Load environment variables
@@ -129,7 +129,7 @@ async def cmd_index(args: argparse.Namespace) -> int:
 
 
 async def cmd_find(args: argparse.Namespace) -> int:
-    """Find opposing views for input text.
+    """Find diverse views for input text.
 
     Args:
         args: Command line arguments.
@@ -137,7 +137,7 @@ async def cmd_find(args: argparse.Namespace) -> int:
     Returns:
         Exit code.
     """
-    print_header("Opposing View Finder")
+    print_header("Diverse View Finder")
 
     # Get input text
     print("\nEnter your text (press Ctrl+D on Unix, Ctrl+Z on Windows when done):")
@@ -167,7 +167,7 @@ async def cmd_find(args: argparse.Namespace) -> int:
     try:
         embedding_service = EmbeddingService()
         keyword_generator = KeywordGeneratorService()
-        objection_extractor = ObjectionExtractorService()
+        different_view_extractor = DifferentViewExtractorService()
     except ValueError as e:
         print(f"\n❌ Error: {e}")
         return 1
@@ -185,7 +185,7 @@ async def cmd_find(args: argparse.Namespace) -> int:
         # Define callbacks for observability
         def on_keywords_generated(topic: str, keywords: list[str]) -> None:
             print(f"\n📌 Topic: {topic}")
-            print(f"\n🔑 Generated {len(keywords)} opposing keywords:")
+            print(f"\n🔑 Generated {len(keywords)} keywords for diverse perspectives:")
             for i, kw in enumerate(keywords, 1):
                 print(f"   {i}. {kw}")
 
@@ -205,27 +205,27 @@ async def cmd_find(args: argparse.Namespace) -> int:
                 if len(results) > 5:
                     print(f"      ... and {len(results) - 5} more")
 
-        def on_ranking_start(candidate_count: int) -> None:
-            print(f"\n⚖️  Extracting objections from {candidate_count} candidates...")
+        def on_extraction_start(candidate_count: int) -> None:
+            print(f"\n🔍 Finding different perspectives from {candidate_count} candidates...")
 
         # Create finder and run
-        finder = OpposingViewFinder(
+        finder = DiverseViewFinder(
             embedding_service=embedding_service,
             vector_db=vector_db,
             keyword_generator=keyword_generator,
-            objection_extractor=objection_extractor,
+            different_view_extractor=different_view_extractor,
         )
 
-        result = await finder.find_opposing_views(
+        result = await finder.find_diverse_views(
             input_text,
             on_keywords_generated=on_keywords_generated,
             on_keyword_search_start=on_keyword_search_start,
             on_keyword_search_complete=on_keyword_search_complete,
-            on_ranking_start=on_ranking_start,
+            on_extraction_start=on_extraction_start,
         )
 
         # Display final results
-        print_header("반박 결과")
+        print_header("함께 생각해볼 다른 관점")
 
         print(f"\n📊 Total unique candidates: {result.total_candidates_found}")
 
@@ -234,18 +234,18 @@ async def cmd_find(args: argparse.Namespace) -> int:
             for error in result.errors:
                 print(f"   - {error}")
 
-        if not result.objections:
-            print("\n❌ 반박할 내용을 찾지 못했습니다.")
+        if not result.different_views:
+            print("\n💭 이 주제에 대한 다른 관점을 찾지 못했습니다.")
             return 0
 
-        for i, obj in enumerate(result.objections, 1):
+        for i, view in enumerate(result.different_views, 1):
             print_separator()
-            print(f"\n{i}. 원문:")
-            print(f"   \"{obj.exact_text}\"")
-            print(f"\n   💬 반박:")
-            print(f"   {obj.objection}")
-            print(f"\n   📚 참고:")
-            for ref in obj.reference:
+            print(f"\n{i}. 원문에서:")
+            print(f"   \"{view.exact_text}\"")
+            print(f"\n   💬 이런 관점도 있어요:")
+            print(f"   {view.different_view}")
+            print(f"\n   📚 참고 기사:")
+            for ref in view.reference:
                 print(f"   - [{ref.title}]")
                 print(f"     \"{ref.quote}\"")
                 if ref.url:
@@ -293,7 +293,7 @@ async def cmd_status(args: argparse.Namespace) -> int:
 def main() -> int:
     """Main entry point."""
     parser = argparse.ArgumentParser(
-        description="Opposing View Finder CLI",
+        description="Diverse View Finder CLI - Discover different perspectives on any topic",
         formatter_class=argparse.RawDescriptionHelpFormatter,
     )
     subparsers = parser.add_subparsers(dest="command", help="Available commands")
@@ -320,9 +320,9 @@ def main() -> int:
         help="Force re-index all articles",
     )
 
-    # Find command (renamed from find-opposing)
+    # Find command
     find_parser = subparsers.add_parser(
-        "find", help="Find opposing views for input text"
+        "find", help="Find diverse perspectives for input text"
     )
 
     # Status command

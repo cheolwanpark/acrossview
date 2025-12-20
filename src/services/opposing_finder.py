@@ -1,4 +1,4 @@
-"""Opposing view finder - orchestrates the full pipeline."""
+"""Different view finder - orchestrates the full pipeline."""
 
 import asyncio
 import logging
@@ -9,8 +9,8 @@ from .embedding import EmbeddingService
 from .keyword_generator import KeywordGeneratorService
 from .objection_extractor import (
     ArticleReference,
-    ObjectionExtractorService,
-    ObjectionResult,
+    DifferentViewExtractorService,
+    DifferentViewResult,
 )
 from .vector_db import SearchResult, VectorDBService
 
@@ -27,12 +27,12 @@ class KeywordSearchResult:
 
 
 @dataclass
-class OpposingViewResult:
-    """Result from the opposing view finder."""
+class DiverseViewResult:
+    """Result from the diverse view finder."""
 
     input_summary: str
     keywords_used: list[str]
-    objections: list[ObjectionResult]
+    different_views: list[DifferentViewResult]
     total_candidates_found: int = 0
     keyword_results: list[KeywordSearchResult] = field(default_factory=list)
     errors: list[str] = field(default_factory=list)
@@ -45,8 +45,8 @@ OnKeywordSearchComplete = Callable[[str, list[SearchResult]], None]  # (keyword,
 OnRankingStart = Callable[[int], None]  # (candidate_count)
 
 
-class OpposingViewFinder:
-    """Orchestrates the full opposing view finding pipeline."""
+class DiverseViewFinder:
+    """Orchestrates the full diverse view finding pipeline."""
 
     MAX_ARTICLES_PER_KEYWORD = 10
     PRE_FILTER_LIMIT = 15
@@ -56,20 +56,20 @@ class OpposingViewFinder:
         embedding_service: EmbeddingService,
         vector_db: VectorDBService,
         keyword_generator: KeywordGeneratorService,
-        objection_extractor: ObjectionExtractorService,
+        different_view_extractor: DifferentViewExtractorService,
     ):
-        """Initialize the opposing view finder.
+        """Initialize the diverse view finder.
 
         Args:
             embedding_service: Service for generating embeddings.
             vector_db: Service for vector search.
-            keyword_generator: Service for generating opposing keywords.
-            objection_extractor: Service for extracting objections.
+            keyword_generator: Service for generating diverse keywords.
+            different_view_extractor: Service for extracting different views.
         """
         self.embedding = embedding_service
         self.vector_db = vector_db
         self.keyword_gen = keyword_generator
-        self.extractor = objection_extractor
+        self.extractor = different_view_extractor
 
     async def _search_keyword(self, keyword: str) -> KeywordSearchResult:
         """Search for articles matching a keyword.
@@ -116,47 +116,47 @@ class OpposingViewFinder:
 
         return list(seen_ids.values())
 
-    async def find_opposing_views(
+    async def find_diverse_views(
         self,
         input_text: str,
         on_keywords_generated: OnKeywordsGenerated | None = None,
         on_keyword_search_start: OnKeywordSearchStart | None = None,
         on_keyword_search_complete: OnKeywordSearchComplete | None = None,
-        on_ranking_start: OnRankingStart | None = None,
-    ) -> OpposingViewResult:
-        """Find articles with opposing views to the input text.
+        on_extraction_start: OnRankingStart | None = None,
+    ) -> DiverseViewResult:
+        """Find articles with diverse views related to the input text.
 
         Args:
-            input_text: The text to find opposing views for.
+            input_text: The text to find diverse views for.
             on_keywords_generated: Callback when keywords are generated.
             on_keyword_search_start: Callback when keyword search starts.
             on_keyword_search_complete: Callback when keyword search completes.
-            on_ranking_start: Callback when ranking starts.
+            on_extraction_start: Callback when extraction starts.
 
         Returns:
-            OpposingViewResult with topic summary, keywords, and ranked articles.
+            DiverseViewResult with topic summary, keywords, and different views.
         """
         errors: list[str] = []
 
-        # Step 1: Generate opposing keywords
+        # Step 1: Generate diverse keywords
         try:
-            keyword_result = await self.keyword_gen.generate_opposing_keywords(
+            keyword_result = await self.keyword_gen.generate_diverse_keywords(
                 input_text
             )
         except Exception as e:
-            return OpposingViewResult(
+            return DiverseViewResult(
                 input_summary="키워드 생성 실패",
                 keywords_used=[],
-                objections=[],
+                different_views=[],
                 errors=[f"키워드 생성 중 오류 발생: {e}"],
             )
 
         keywords = keyword_result.keywords
         if not keywords:
-            return OpposingViewResult(
+            return DiverseViewResult(
                 input_summary=keyword_result.topic_summary,
                 keywords_used=[],
-                objections=[],
+                different_views=[],
                 errors=["생성된 키워드가 없습니다."],
             )
 
@@ -181,35 +181,35 @@ class OpposingViewFinder:
         total_candidates = len(deduplicated)
 
         if not deduplicated:
-            return OpposingViewResult(
+            return DiverseViewResult(
                 input_summary=keyword_result.topic_summary,
                 keywords_used=keywords,
-                objections=[],
+                different_views=[],
                 total_candidates_found=0,
                 keyword_results=keyword_results,
                 errors=["검색 결과가 없습니다. 기사 인덱싱이 필요할 수 있습니다."],
             )
 
-        # Step 4: Pre-filter: top N by distance (for LLM ranking)
+        # Step 4: Pre-filter: top N by distance (for LLM extraction)
         candidates = sorted(deduplicated, key=lambda x: x.distance)[
             : self.PRE_FILTER_LIMIT
         ]
 
         # Notify: extraction start
-        if on_ranking_start:
-            on_ranking_start(len(candidates))
+        if on_extraction_start:
+            on_extraction_start(len(candidates))
 
-        # Step 5: LLM extraction for objections with quotes
+        # Step 5: LLM extraction for different views with quotes
         try:
-            objections = await self.extractor.extract_objections(input_text, candidates)
+            different_views = await self.extractor.extract_different_views(input_text, candidates)
         except Exception as e:
-            errors.append(f"반박 추출 중 오류: {e}")
-            objections = []
+            errors.append(f"다른 시각 추출 중 오류: {e}")
+            different_views = []
 
-        return OpposingViewResult(
+        return DiverseViewResult(
             input_summary=keyword_result.topic_summary,
             keywords_used=keywords,
-            objections=objections,
+            different_views=different_views,
             total_candidates_found=total_candidates,
             keyword_results=keyword_results,
             errors=errors,

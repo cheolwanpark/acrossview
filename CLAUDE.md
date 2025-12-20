@@ -130,22 +130,25 @@ src/
 │   └── base.py     # Crawler with trafilatura
 ├── engine.py       # Async scheduler + rate limiter
 ├── main.py         # CLI entry point
-└── services/       # Opposing view finder services
-    ├── embedding.py          # Google GenAI embeddings
-    ├── vector_db.py          # sqlite-vss vector search
-    ├── keyword_generator.py  # LLM keyword generation
-    ├── objection_extractor.py # LLM objection extraction with quotes
-    └── opposing_finder.py    # Orchestrator
+└── services/       # Diverse view finder services
+    ├── embedding.py           # Google GenAI embeddings
+    ├── vector_db.py           # sqlite-vss vector search
+    ├── keyword_generator.py   # LLM keyword generation (KeywordGeneratorService)
+    ├── objection_extractor.py # LLM different view extraction (DifferentViewExtractorService)
+    └── opposing_finder.py     # Orchestrator (DiverseViewFinder)
 
 scripts/
-└── cli.py          # Opposing view finder CLI
+└── cli.py          # Diverse view finder CLI
 ```
 
 ---
 
-# Opposing View Finder
+# Diverse View Finder (다양한 관점 찾기)
 
-Find articles with opposing/challenging views using vector search and LLM ranking.
+하나의 주제에 대해 **다양한 시각과 관점**을 찾아주는 도구입니다.
+독자가 여러 관점을 접하고, 보다 균형 잡힌 이해를 가질 수 있도록 돕습니다.
+
+> "반박"이나 "반대"가 아닌, **"이런 관점도 있어요"**라는 친절한 정보 제공에 초점을 맞춥니다.
 
 ## Quick Start
 
@@ -157,7 +160,7 @@ cp .env.example .env
 # Index articles into vector DB (required once)
 uv run python scripts/cli.py index
 
-# Find opposing views
+# Find diverse perspectives
 uv run python scripts/cli.py find
 ```
 
@@ -166,7 +169,8 @@ uv run python scripts/cli.py find
 ```
 User Input (multiline text)
     ↓
-[1] Generate 3-5 opposing keywords (gemini-2.5-flash-lite)
+[1] Generate 3-5 keywords for diverse perspectives
+    └── KeywordGeneratorService.generate_diverse_keywords()
     ↓
 [2] Vector search per keyword (sqlite-vss + gemini-embedding-001)
     ├── Max 10 articles per keyword
@@ -174,31 +178,80 @@ User Input (multiline text)
     ↓
 [3] Pre-filter top 15 by distance
     ↓
-[4] LLM extraction (gemini-2.5-flash-lite)
-    ├── Extract claims from input text
-    ├── Generate objections with article quotes
-    └── Validate quotes against source articles
+[4] LLM extraction
+    └── DifferentViewExtractorService.extract_different_views()
+        ├── Identify claims from input text
+        ├── Find different perspectives with article quotes
+        └── Validate quotes against source articles
     ↓
-[5] Display structured objections with references
+[5] Display "함께 생각해볼 다른 관점" with references
 ```
+
+## Core Classes
+
+| Class | Description |
+|-------|-------------|
+| `DiverseViewFinder` | 전체 파이프라인 오케스트레이터 |
+| `KeywordGeneratorService` | 다양한 관점 검색을 위한 키워드 생성 |
+| `DifferentViewExtractorService` | 기사에서 다른 관점 추출 및 인용문 검증 |
+| `DiverseViewResult` | 최종 결과 데이터 클래스 |
+| `DifferentViewResult` | 개별 다른 관점 항목 |
 
 ## Output Format
 
 ```python
-[
-    {
-        "exact_text": "원문에서 반박할 정확한 문장",
-        "objection": "반대 의견 (1-2문장)",
-        "reference": [
-            {
-                "title": "기사 제목",
-                "quote": "기사에서 인용한 문장",
-                "url": "https://..."
-            }
-        ]
-    }
-]
+DiverseViewResult(
+    input_summary="주제 요약",
+    keywords_used=["키워드1", "키워드2", ...],
+    different_views=[
+        DifferentViewResult(
+            exact_text="원문에서 다른 관점을 제시할 문장",
+            different_view="풍부한 맥락과 함께 상세한 다른 관점 설명 (4-6문장)",
+            reference=[
+                ArticleReference(
+                    title="기사 제목",
+                    quote="기사에서 인용한 문장",
+                    url="https://..."
+                )
+            ]
+        )
+    ],
+    total_candidates_found=15,
+    errors=[]
+)
 ```
+
+## Response Quality
+
+각 `different_view`는 다음 요소를 포함하여 **4-6문장**으로 상세히 작성됩니다:
+
+| 요소 | 설명 | 예시 |
+|------|------|------|
+| **누가** | 어떤 사람들/단체가 이 시각을 가지는지 | "경제학자들과 시민단체에서는..." |
+| **왜** | 이런 다른 시각이 존재하는 배경과 이유 | "급격한 변화가 ... 때문에" |
+| **핵심 포인트** | 이 관점에서 우려하거나 강조하는 점 | "소비자 보호가 약화될 수 있다고 우려" |
+| **맥락** | 더 넓은 사회적/경제적 연결점 | "과거 유사한 정책 시행 당시의 사례를 근거로" |
+
+### Example Response
+
+```
+"이 정책에 대해 경제학자들과 시민단체에서는 다른 시각을 제시하고 있습니다.
+일부 전문가들은 급격한 규제 완화가 단기적인 경제 성장에는 도움이 될 수 있지만,
+장기적으로는 소비자 보호 장치가 약화될 수 있다고 우려합니다.
+특히 중소기업 협회에서는 대기업에 유리한 환경이 조성되면서
+시장 내 경쟁이 오히려 줄어들 수 있다는 점을 지적하고 있습니다.
+또한 노동계에서는 근로자의 권익 보호가 후순위로 밀릴 수 있다는
+염려를 표명하고 있으며, 이는 과거 유사한 정책 시행 당시의
+부작용 사례를 근거로 들고 있습니다."
+```
+
+### Tone Guidelines
+
+- ✅ "~라는 의견도 있습니다"
+- ✅ "~를 우려하는 시각도 있습니다"
+- ✅ "~라고 주장합니다"
+- ✅ "이런 관점도 있어요"
+- ❌ "반박", "반대", "틀렸다"
 
 ## CLI Commands
 
@@ -211,8 +264,30 @@ uv run python scripts/cli.py index
 uv run python scripts/cli.py index --batch-size 50
 uv run python scripts/cli.py index --force  # Re-index all
 
-# Find opposing views (interactive)
+# Find diverse perspectives (interactive)
 uv run python scripts/cli.py find
+```
+
+## CLI Output Example
+
+```
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  함께 생각해볼 다른 관점
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+📊 Total unique candidates: 15
+────────────────────────────────────────────────────────────
+
+1. 원문에서:
+   "규제 완화가 경제 성장의 핵심이다"
+
+   💬 이런 관점도 있어요:
+   이 정책에 대해 경제학자들과 시민단체에서는 다른 시각을 제시하고 있습니다...
+
+   📚 참고 기사:
+   - [한겨레 - 규제 완화의 그늘]
+     "중소기업들은 오히려 경쟁력을 잃을 수 있다는 우려를 표명했다"
+     https://...
 ```
 
 ## Vector Database

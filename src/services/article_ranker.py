@@ -13,12 +13,12 @@ from .vector_db import SearchResult
 
 
 class RankedArticle(BaseModel):
-    """A ranked article with opposition reasoning."""
+    """A ranked article with different perspective reasoning."""
 
     article_id: int
     title: str
     relevance_score: float
-    opposition_reason: str
+    perspective_reason: str
 
 
 class RankingResponse(BaseModel):
@@ -28,19 +28,22 @@ class RankingResponse(BaseModel):
 
 
 class ArticleRankerService:
-    """Service for ranking articles by opposition relevance."""
+    """Service for ranking articles by perspective diversity."""
 
     MAX_CANDIDATES = 15  # Limit to avoid context overflow
 
     PROMPT = """당신은 뉴스 분석 전문가입니다.
 
-원본 텍스트와 후보 기사들을 비교하여, **가장 반대되거나 도전적인 관점**을
+원본 텍스트와 후보 기사들을 비교하여, **다양한 시각이나 관점**을
 제시하는 기사 5개를 선택하세요.
 
+이 작업의 목적은 독자가 하나의 주제에 대해 여러 관점을 접하고,
+보다 균형 잡힌 이해를 가질 수 있도록 돕는 것입니다.
+
 선택 기준:
-1. 원본 텍스트의 주장에 반대하는 관점
+1. 원본 텍스트와 다른 시각을 가진 관점
 2. 같은 주제/사건에 대한 다른 해석
-3. 원본의 논리에 도전하는 근거 제시
+3. 원본에서 다루지 않은 새로운 관점 제시
 
 원본 텍스트:
 {input_text}
@@ -51,8 +54,8 @@ class ArticleRankerService:
 정확히 5개의 기사를 선택하고, 각각에 대해:
 - article_id: 기사 번호
 - title: 기사 제목
-- relevance_score: 반대 관점으로서의 관련성 (0.0-1.0)
-- opposition_reason: 이 기사가 원본에 어떻게 반대하는지 설명 (1-2문장)"""
+- relevance_score: 다른 시각으로서의 관련성 (0.0-1.0)
+- perspective_reason: 이 기사가 원본과 어떻게 다른 시각을 제시하는지 설명 (1-2문장)"""
 
     def __init__(self, api_key: str | None = None):
         """Initialize the article ranker service.
@@ -115,7 +118,7 @@ class ArticleRankerService:
                     article_id=c.article_id,
                     title=c.title or "제목 없음",
                     relevance_score=1.0 - c.distance,  # Convert distance to score
-                    opposition_reason="벡터 검색 결과로 관련성 있는 기사입니다.",
+                    perspective_reason="관련 주제에 대한 다른 시각을 제공하는 기사입니다.",
                 )
                 for c in candidates
             ]

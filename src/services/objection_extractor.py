@@ -1,4 +1,4 @@
-"""Objection extractor service using Google GenAI."""
+"""Different view extractor service using Google GenAI."""
 
 import asyncio
 import os
@@ -21,23 +21,23 @@ class ArticleQuote(BaseModel):
     quote: str
 
 
-class LLMObjection(BaseModel):
-    """An objection as returned by LLM."""
+class LLMDifferentView(BaseModel):
+    """A different view as returned by LLM."""
 
     exact_text: str
-    objection: str
+    different_view: str
     quotes: list[ArticleQuote]
 
 
 class ExtractionResponse(BaseModel):
     """Response from the extraction model."""
 
-    objections: list[LLMObjection]
+    different_views: list[LLMDifferentView]
 
 
 @dataclass
 class ArticleReference:
-    """A reference to an article supporting an objection."""
+    """A reference to an article supporting a different view."""
 
     title: str
     quote: str
@@ -45,16 +45,16 @@ class ArticleReference:
 
 
 @dataclass
-class ObjectionResult:
-    """A single objection to a claim in the input text."""
+class DifferentViewResult:
+    """A different perspective on a claim in the input text."""
 
     exact_text: str
-    objection: str
+    different_view: str
     reference: list[ArticleReference]
 
 
-class ObjectionExtractorService:
-    """Service for extracting objections with quotes from articles."""
+class DifferentViewExtractorService:
+    """Service for extracting different views with quotes from articles."""
 
     MAX_CANDIDATES = 15
     MAX_BODY_LENGTH = 1500  # Truncate article body to avoid context overflow
@@ -64,8 +64,12 @@ class ObjectionExtractorService:
 
     PROMPT = """당신은 뉴스 분석 전문가입니다.
 
-사용자의 입력 텍스트에서 **반박 가능한 주장이나 진술**을 찾아서,
-제공된 기사들에서 **반대 의견과 근거**를 추출하세요.
+사용자의 입력 텍스트를 읽고, 해당 내용에 대해 **함께 생각해볼 만한 다른 관점**을
+제공된 기사들에서 찾아 정리해주세요.
+
+이 작업의 목적은 독자가 하나의 주제에 대해 여러 관점을 접하고,
+보다 균형 잡힌 이해를 가질 수 있도록 돕는 것입니다.
+비판이 아닌, "이런 시각도 있다"는 정보 제공에 초점을 맞춰주세요.
 
 ## 입력 텍스트
 {input_text}
@@ -74,19 +78,41 @@ class ObjectionExtractorService:
 {formatted_articles}
 
 ## 출력 규칙
-1. exact_text: 입력 텍스트에서 반박할 **정확한 문장이나 구절** (원문 그대로 복사)
-2. objection: 반대 의견 또는 반박 (1-2문장으로 요약)
-3. quotes: 반박을 뒷받침하는 기사 인용문 목록
+1. exact_text: 입력 텍스트에서 다른 관점을 제시할 **정확한 문장이나 구절** (원문 그대로 복사)
+
+2. different_view: 해당 문장에 대한 다른 관점을 **풍부한 맥락과 함께 상세히** 설명 (4-6문장)
+   반드시 다음 요소들을 포함해주세요:
+   - 어떤 사람들/단체가 이런 시각을 가지고 있는지 (예: 전문가, 시민단체, 업계 관계자 등)
+   - 왜 이런 다른 시각이 존재하는지 배경이나 이유
+   - 이 관점에서 우려하거나 강조하는 핵심 포인트
+   - 더 넓은 사회적/경제적 맥락과의 연결점
+   - "~라는 의견도 있습니다", "~를 우려하는 시각도 있습니다", "~라고 주장합니다" 등 부드러운 표현 사용
+
+3. quotes: 해당 관점을 뒷받침하는 기사 인용문 목록
    - article_id: 기사 ID 번호 (위의 [기사 ID: X]에서 X)
    - quote: 기사에서 발췌한 **정확한 문장** (원문 그대로 복사, 수정하지 마세요)
 
+## 예시
+좋은 예:
+"이 정책에 대해 경제학자들과 시민단체에서는 다른 시각을 제시하고 있습니다.
+일부 전문가들은 급격한 규제 완화가 단기적인 경제 성장에는 도움이 될 수 있지만,
+장기적으로는 소비자 보호 장치가 약화될 수 있다고 우려합니다.
+특히 중소기업 협회에서는 대기업에 유리한 환경이 조성되면서
+시장 내 경쟁이 오히려 줄어들 수 있다는 점을 지적하고 있습니다.
+또한 노동계에서는 근로자의 권익 보호가 후순위로 밀릴 수 있다는
+염려를 표명하고 있으며, 이는 과거 유사한 정책 시행 당시의
+부작용 사례를 근거로 들고 있습니다."
+
+나쁜 예:
+"규제 완화에 반대하는 의견도 있음"
+
 ## 중요
-- 최대 5개의 반박을 추출하세요
-- 기사에 명확한 근거가 없으면 해당 반박은 제외하세요
+- 최대 5개의 다른 관점을 추출하세요
+- 기사에 명확한 근거가 없으면 해당 항목은 제외하세요
 - quote는 반드시 기사 원문에서 그대로 복사해야 합니다. 임의로 변경하지 마세요."""
 
     def __init__(self, api_key: str | None = None):
-        """Initialize the objection extractor service.
+        """Initialize the different view extractor service.
 
         Args:
             api_key: Optional API key. If not provided, reads from GEMINI_API_KEY env var.
@@ -173,14 +199,14 @@ class ObjectionExtractorService:
 
         return False
 
-    def _build_objection_results(
+    def _build_different_view_results(
         self,
         llm_response: ExtractionResponse,
         candidates: list[SearchResult],
         truncated_bodies: dict[int, str],
         input_text: str,
-    ) -> list[ObjectionResult]:
-        """Map LLM response to final ObjectionResult with article metadata.
+    ) -> list[DifferentViewResult]:
+        """Map LLM response to final DifferentViewResult with article metadata.
 
         Args:
             llm_response: The response from LLM extraction.
@@ -189,18 +215,18 @@ class ObjectionExtractorService:
             input_text: The original input text for exact_text validation.
 
         Returns:
-            List of ObjectionResult with validated quotes.
+            List of DifferentViewResult with validated quotes.
         """
         article_map = {c.article_id: c for c in candidates}
 
         results = []
-        for obj in llm_response.objections:
+        for view in llm_response.different_views:
             # Validate exact_text is actually from the input
-            if not self._validate_text_in_source(obj.exact_text, input_text):
+            if not self._validate_text_in_source(view.exact_text, input_text):
                 continue
 
             references = []
-            for quote_ref in obj.quotes:
+            for quote_ref in view.quotes:
                 article = article_map.get(quote_ref.article_id)
                 truncated_body = truncated_bodies.get(quote_ref.article_id, "")
 
@@ -216,12 +242,12 @@ class ObjectionExtractorService:
                         )
                     )
 
-            # Only include objections with valid references
+            # Only include views with valid references
             if references:
                 results.append(
-                    ObjectionResult(
-                        exact_text=obj.exact_text,
-                        objection=obj.objection,
+                    DifferentViewResult(
+                        exact_text=view.exact_text,
+                        different_view=view.different_view,
                         reference=references,
                     )
                 )
@@ -233,17 +259,17 @@ class ObjectionExtractorService:
         wait=wait_exponential(multiplier=1, min=2, max=10),
         reraise=True,
     )
-    async def extract_objections(
+    async def extract_different_views(
         self, input_text: str, candidates: list[SearchResult]
-    ) -> list[ObjectionResult]:
-        """Extract objections from input text using candidate articles.
+    ) -> list[DifferentViewResult]:
+        """Extract different views from input text using candidate articles.
 
         Args:
             input_text: The original input text.
             candidates: List of candidate articles from vector search.
 
         Returns:
-            List of ObjectionResult with validated quotes and references.
+            List of DifferentViewResult with validated quotes and references.
         """
         # Truncate to MAX_CANDIDATES
         candidates = candidates[: self.MAX_CANDIDATES]
@@ -273,13 +299,13 @@ class ObjectionExtractorService:
         result = await asyncio.to_thread(_sync_generate)
 
         if isinstance(result, ExtractionResponse):
-            return self._build_objection_results(
+            return self._build_different_view_results(
                 result, candidates, truncated_bodies, input_text
             )
 
-        if isinstance(result, dict) and "objections" in result:
+        if isinstance(result, dict) and "different_views" in result:
             parsed = ExtractionResponse(**result)
-            return self._build_objection_results(
+            return self._build_different_view_results(
                 parsed, candidates, truncated_bodies, input_text
             )
 
