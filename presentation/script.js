@@ -55,6 +55,32 @@
     }
   }
 
+  // Fullscreen functionality
+  const fullscreenBtn = document.querySelector('.fullscreen-btn');
+
+  function toggleFullscreen() {
+    if (!document.fullscreenElement) {
+      document.documentElement.requestFullscreen().catch(err => {
+        console.log('Fullscreen error:', err);
+      });
+    } else {
+      document.exitFullscreen();
+    }
+  }
+
+  function updateFullscreenButton() {
+    if (fullscreenBtn) {
+      fullscreenBtn.classList.toggle('is-fullscreen', !!document.fullscreenElement);
+      fullscreenBtn.title = document.fullscreenElement ? 'Exit fullscreen (F)' : 'Fullscreen (F)';
+    }
+  }
+
+  if (fullscreenBtn) {
+    fullscreenBtn.addEventListener('click', toggleFullscreen);
+  }
+
+  document.addEventListener('fullscreenchange', updateFullscreenButton);
+
   // Keyboard navigation
   document.addEventListener('keydown', (e) => {
     // Ignore if focus is on interactive elements
@@ -82,6 +108,14 @@
       case 'End':
         e.preventDefault();
         showSlide(totalSlides - 1);
+        break;
+      case 'f':
+      case 'F':
+        e.preventDefault();
+        toggleFullscreen();
+        break;
+      case 'Escape':
+        // Escape is handled by browser for exiting fullscreen
         break;
     }
   });

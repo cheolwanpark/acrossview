@@ -107,6 +107,47 @@ html, body {
   border-radius: 20px;
 }
 
+/* === Fullscreen Button === */
+.fullscreen-btn {
+  position: fixed;
+  bottom: 20px;
+  right: 100px;
+  width: 36px;
+  height: 36px;
+  border: none;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.8);
+  color: #666;
+  cursor: pointer;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s, color 0.2s;
+}
+
+.fullscreen-btn:hover {
+  background: var(--accent-blue);
+  color: #fff;
+}
+
+.fullscreen-btn svg {
+  width: 18px;
+  height: 18px;
+}
+
+.fullscreen-btn .icon-compress {
+  display: none;
+}
+
+.fullscreen-btn.is-fullscreen .icon-expand {
+  display: none;
+}
+
+.fullscreen-btn.is-fullscreen .icon-compress {
+  display: block;
+}
+
 /* ================================
    SLIDE 1: TITLE
 ================================ */
@@ -250,7 +291,8 @@ html, body {
     opacity: 0.4 !important;
   }
 
-  .slide-indicator {
+  .slide-indicator,
+  .fullscreen-btn {
     display: none !important;
   }
 
