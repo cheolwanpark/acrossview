@@ -19,6 +19,7 @@
 | 박철완 | [@cheolwanpark](https://github.com/cheolwanpark) |
 | 임동현 | [@Happ11quokka](https://github.com/Happ11quokka)|
 | 조민성 | [@m-seong0801](https://github.com/m-seong0801)|
+| 서지민 | [@mindolok](https://github.com/mindolok) |
 
 ---
 
