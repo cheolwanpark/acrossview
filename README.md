@@ -20,6 +20,7 @@
 | 임동현 | [@Happ11quokka](https://github.com/Happ11quokka)|
 | 조민성 | [@m-seong0801](https://github.com/m-seong0801)|
 | 서지민 | [@mindolok](https://github.com/mindolok) |
+| 박혜진 | [@hjpark6463](https://github.com/hjpark6463-cyber)
 
 ---
 
