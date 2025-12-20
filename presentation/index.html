@@ -15,187 +15,180 @@
     <section class="slide slide-title" id="slide-1">
       <div class="blob blob-1"></div>
       <div class="slide-content">
-        <span class="arrow-deco">───→</span>
-        <p class="top-right">관점을 <strong>연결</strong>하다</p>
-        <h1>Across<br>View</h1>
-      </div>
-    </section>
-
-    <!-- Slide 2: Table of Contents -->
-    <section class="slide slide-toc" id="slide-2">
-      <div class="blob blob-3"></div>
-      <div class="slide-content">
-        <h2>Table of contents</h2>
-        <div class="toc-grid">
-          <div class="toc-item">
-            <span class="toc-number">01</span>
-            <span class="toc-text">문제 정의<br>필터버블과 단절</span>
-          </div>
-          <div class="toc-item">
-            <span class="toc-number">05</span>
-            <span class="toc-text">솔루션 프로세스<br>쟁점 하이라이팅</span>
-          </div>
-          <div class="toc-item">
-            <span class="toc-number">02</span>
-            <span class="toc-text">현상 분석<br>같은 뉴스, 다른 세상</span>
-          </div>
-          <div class="toc-item">
-            <span class="toc-number">06</span>
-            <span class="toc-text">데모 시연<br>실제 작동 방식</span>
-          </div>
-          <div class="toc-item">
-            <span class="toc-number">03</span>
-            <span class="toc-text">기존 한계<br>왜 실패했나</span>
-          </div>
-          <div class="toc-item">
-            <span class="toc-number">07</span>
-            <span class="toc-text">기대 효과<br>연결의 회복</span>
-          </div>
-          <div class="toc-item">
-            <span class="toc-number">04</span>
-            <span class="toc-text">솔루션 소개<br>AcrossView 접근</span>
-          </div>
-          <div class="toc-item">
-            <span class="toc-number">08</span>
-            <span class="toc-text">확장 가능성<br>마무리</span>
-          </div>
+        <p class="team-name">MCP는 직접 만들어 쓰자</p>
+        <div class="title-main">
+          <h1>Across<br>View</h1>
+          <p class="tagline">관점을 <strong>연결</strong>하다</p>
         </div>
       </div>
     </section>
 
-    <!-- Slide 3: Section Divider - Problem -->
-    <section class="slide slide-section" id="slide-3">
-      <div class="blob blob-3"></div>
-      <div class="slide-content">
-        <span class="arrow-deco">───→</span>
-        <p class="top-right">같은 뉴스, <strong>다른 세상</strong></p>
-        <div class="section-number">01</div>
-        <h2>문제 정의</h2>
-      </div>
-    </section>
-
-    <!-- Slide 4: Overview - Filter Bubble -->
-    <section class="slide slide-overview" id="slide-4">
+    <!-- Slide 2: Section Divider - 연결 -->
+    <section class="slide slide-section" id="slide-2">
       <div class="blob blob-2"></div>
       <div class="slide-content">
-        <h2>필터버블</h2>
-        <span class="arrow-deco">───→</span>
-        <div class="content-right">
-          <p>알고리즘이 <strong>내 취향에 맞는 정보만</strong> 보여주고, 다른 관점은 아예 보이지 않게 만드는 구조입니다.</p>
-          <br>
-          <p>유튜브는 시청 기록 기반으로 비슷한 영상만 추천하고, 네이버 뉴스는 클릭 패턴에 따라 같은 논조만 보여줍니다.</p>
-          <br>
-          <p>결과적으로 우리는 <strong>각자 다른 현실</strong>에서 살게 됩니다.</p>
+        <h1 class="section-title">연결</h1>
+        <p class="section-subtitle">아이디어 도출과정</p>
+      </div>
+    </section>
+
+    <!-- Slide 3: 필터 버블 -->
+    <section class="slide slide-bubble" id="slide-3">
+      <div class="blob blob-2"></div>
+      <div class="slide-content">
+        <h2>필터 버블</h2>
+        <p class="subtitle">알고리즘이 내 취향·의견에 맞는 정보만 보여주고,<br>다른 관점은 배제하는 현상</p>
+        <div class="bubble-columns">
+          <div class="bubble-column">
+            <div class="bubble-icon">
+              <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M24 8C15.163 8 8 15.163 8 24" stroke="#7eb8da" stroke-width="3" stroke-linecap="round"/>
+                <path d="M24 40C32.837 40 40 32.837 40 24" stroke="#7eb8da" stroke-width="3" stroke-linecap="round"/>
+                <path d="M8 24L4 20M8 24L12 20" stroke="#7eb8da" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M40 24L44 28M40 24L36 28" stroke="#7eb8da" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+                <circle cx="24" cy="24" r="6" stroke="#7eb8da" stroke-width="2.5" fill="none"/>
+              </svg>
+            </div>
+            <p class="bubble-text">알고리즘은 사용자의 취향을 강화합니다.<br>내가 영상을 볼수록, 점점 내가 좋아하는 것만 뜨게 됩니다.</p>
+          </div>
+          <div class="bubble-column">
+            <div class="bubble-icon">
+              <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M24 6C16 6 10 12 10 19C10 24 12 27 15 30C17 32 18 34 18 37V38H30V37C30 34 31 32 33 30C36 27 38 24 38 19C38 12 32 6 24 6Z" stroke="#7eb8da" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+                <path d="M18 42H30" stroke="#7eb8da" stroke-width="3" stroke-linecap="round"/>
+                <path d="M20 19C20 17.5 21 16 24 16" stroke="#7eb8da" stroke-width="2.5" stroke-linecap="round"/>
+                <circle cx="24" cy="24" r="2" fill="#7eb8da"/>
+              </svg>
+            </div>
+            <p class="bubble-text"><strong>확증편향</strong>: 자신의 신념을 확인해주는<br>정보만 선택적으로 받아들이는 현상</p>
+          </div>
+        </div>
+        <div class="insight-box">
+          <p><strong>역설적으로</strong> 우리가 많은 정보에 노출될수록,<br>다른 생각과 <strong>연결</strong>될 기회는 점점 줄어듭니다.</p>
         </div>
       </div>
     </section>
 
-    <!-- Slide 5: Diagram - Existing Limitations -->
-    <section class="slide slide-diagram" id="slide-5">
+    <!-- Slide 4: 예시 -->
+    <section class="slide slide-examples" id="slide-4">
+      <div class="blob blob-3"></div>
+      <div class="slide-content">
+        <h2>서로 다른 세상을 보고 있습니다</h2>
+        <div class="example-split">
+          <div class="example-box">
+            <div class="example-label">부모님의 알고리즘</div>
+            <div class="example-tags">
+              <span class="example-tag">정치 뉴스</span>
+              <span class="example-tag">건강 정보</span>
+              <span class="example-tag">트로트</span>
+              <span class="example-tag">부동산</span>
+            </div>
+          </div>
+          <div class="example-divider">
+            <span class="divider-text">서로 다른 현실</span>
+          </div>
+          <div class="example-box">
+            <div class="example-label">나의 알고리즘</div>
+            <div class="example-tags">
+              <span class="example-tag">IT/테크</span>
+              <span class="example-tag">게임</span>
+              <span class="example-tag">K-POP</span>
+              <span class="example-tag">밈/유머</span>
+            </div>
+          </div>
+        </div>
+        <p class="mz-quote">"MZ들은 무슨 생각을 할까?" - 이것도 필터 버블로 인한 현상입니다</p>
+        <p class="bottom-text">토론 대신 각자 다른 현실, 의견 차이가 아닌 의견 분리</p>
+      </div>
+    </section>
+
+    <!-- Slide 5: AcrossView 소개 -->
+    <section class="slide slide-service" id="slide-5">
       <div class="blob blob-1"></div>
       <div class="slide-content">
-        <h2>기존 솔루션의 한계</h2>
-        <div class="diagram-container">
-          기존 필터버블 해결 시도와 그 결과
-        </div>
-        <div class="diagram-grid">
-          <div class="diagram-column">
-            <div class="diagram-box">반대 기사 추천</div>
-            <div class="diagram-box">알고리즘 강제 노출</div>
-            <div class="diagram-box">악마의 변호인</div>
+        <div class="service-layout">
+          <div class="service-text">
+            <h2>AcrossView</h2>
+            <p class="subtitle">서로 다른 관점들을 의도적으로 연결하는 서비스</p>
+            <p class="description">하나의 이슈를 하나의 관점으로 소비하는 구조를 넘어,<br>사고의 흐름을 확장하고 다양한 시각에서<br>자신의 의견을 생각해보게 되는 기회를 제공합니다.</p>
+            <div class="philosophy-box">
+              <p class="philosophy-text">"알고리즘이 정답을 제시하는 것이 아니라,<br>사용자가 다양한 정보를 손쉽게 비교할 수 있는 환경을 만듭니다"</p>
+            </div>
+            <p class="key-point">낯선 관점 · 다른 의견 · 상반된 해석을 <strong>연결</strong></p>
           </div>
-          <div class="diagram-column">
-            <div class="diagram-box fail">클릭하지 않음</div>
-            <div class="diagram-box fail">피로감 + 이탈</div>
-            <div class="diagram-box fail">설득 = 반발</div>
-          </div>
-          <div class="diagram-column">
-            <div class="diagram-box fail">관심 없는 콘텐츠</div>
-            <div class="diagram-box fail">사용자 경험 악화</div>
-            <div class="diagram-box fail">심리적 저항</div>
+          <div class="service-image">
+            <img src="acrossview.png" alt="AcrossView 서비스 화면">
           </div>
         </div>
       </div>
     </section>
 
-    <!-- Slide 6: Content with Bullets - Solution -->
-    <section class="slide" id="slide-6">
-      <div class="blob blob-2"></div>
-      <div class="slide-content slide-content-bullets">
-        <div class="content-left">
-          <h2>AcrossView의<br>접근 방식</h2>
-          <p>반대 의견을 강요하지 않습니다. 대신, 다양한 관점으로 가는 문을 만들어 둡니다.</p>
-          <ul class="bullet-list">
-            <li>쟁점이 될 수 있는 문장을 자동 탐지</li>
-            <li>하이라이트로 시각적 표시</li>
-            <li>클릭 시 다양한 관점 펼침</li>
-            <li>선택은 사용자에게, 접근성은 알고리즘이</li>
-          </ul>
-        </div>
-        <div class="content-right-box">
-          데모 스크린샷
-        </div>
-      </div>
-    </section>
-
-    <!-- Slide 7: Flow Diagram - Process -->
-    <section class="slide slide-flow" id="slide-7">
+    <!-- Slide 6: 데모 -->
+    <section class="slide slide-demo" id="slide-6">
       <div class="blob blob-3"></div>
       <div class="slide-content">
-        <h2>쟁점 하이라이팅 프로세스</h2>
-        <div class="flow-container">
+        <span class="demo-badge">DEMO</span>
+        <div class="demo-video-container">
+          <video class="demo-video" controls muted loop>
+            <source src="demo.mp4" type="video/mp4">
+          </video>
+          <div class="demo-video-fallback">
+            <p>데모 영상</p>
+          </div>
+        </div>
+        <p class="demo-caption">뉴스, 유튜브 등 다양한 매체의 내용을 AI가 해석하고,<br>쟁점이 되는 부분을 다른 관점과 연결</p>
+      </div>
+    </section>
+
+    <!-- Slide 7: 쟁점 하이라이팅 -->
+    <section class="slide slide-highlight" id="slide-7">
+      <div class="blob blob-2"></div>
+      <div class="slide-content">
+        <h2>쟁점 하이라이팅</h2>
+        <p class="highlight-subtitle">실제 크롤링된 뉴스 데이터 기반의 다양한 관점 제공</p>
+        <div class="flow-container-4">
           <div class="flow-box">
             <div class="number">01</div>
-            <div class="label">쟁점 탐지</div>
+            <div class="label">키워드 생성</div>
+            <div class="desc">입력 텍스트에서<br>다양한 관점 검색용<br>키워드 3-5개 생성</div>
           </div>
           <span class="flow-arrow">→</span>
           <div class="flow-box">
             <div class="number">02</div>
-            <div class="label">하이라이트 표시</div>
+            <div class="label">벡터 검색</div>
+            <div class="desc">키워드 임베딩으로<br>크롤링된 뉴스에서<br>관련 기사 탐색</div>
           </div>
           <span class="flow-arrow">→</span>
           <div class="flow-box">
             <div class="number">03</div>
-            <div class="label">클릭 시 펼침</div>
+            <div class="label">후보 필터링</div>
+            <div class="desc">유사도 기준<br>상위 10개<br>후보 선택</div>
           </div>
           <span class="flow-arrow">→</span>
           <div class="flow-box">
             <div class="number">04</div>
-            <div class="label">다양한 관점 제시</div>
+            <div class="label">관점 추출</div>
+            <div class="desc">LLM이 쟁점 식별<br>대조 관점 추출<br>인용문 검증</div>
           </div>
         </div>
-        <div class="flow-result">
-          <div class="result-box">
-            사용자가 선택 → 연결의 기회
-          </div>
+        <div class="key-message">
+          <p>단순한 반대 의견이 아닌:<br><strong>제3의 해석 · 보강 자료 · 객관적 팩트</strong></p>
         </div>
+        <p class="bottom-text">사용자가 능동적으로 선택 → 편향된 시각에 갇히지 않고 사안을 입체적으로 조망</p>
       </div>
     </section>
 
-    <!-- Slide 8: Closing -->
-    <section class="slide slide-closing" id="slide-8">
+    <!-- Slide 8: 마무리 -->
+    <section class="slide slide-vision" id="slide-8">
       <div class="blob blob-1"></div>
       <div class="slide-content">
-        <div class="roadmap">
-          <div class="roadmap-item current">
-            <div class="phase">Phase 1</div>
-            <div class="desc">뉴스/웹</div>
-          </div>
-          <span class="roadmap-arrow">→</span>
-          <div class="roadmap-item">
-            <div class="phase">Phase 2</div>
-            <div class="desc">언론사/포털</div>
-          </div>
-          <span class="roadmap-arrow">→</span>
-          <div class="roadmap-item">
-            <div class="phase">Phase 3</div>
-            <div class="desc">SNS/영상</div>
-          </div>
+        <p class="opening">필터 버블은 단순한 개인의 문제가 아닌,<br>사회 전체가 서로를 이해하지 못하게 만드는 구조적 문제입니다</p>
+        <div class="connection-list">
+          <div class="connection-item">사회 <span class="connection-arrow">↔</span> 사회</div>
+          <div class="connection-item">세대 <span class="connection-arrow">↔</span> 세대</div>
+          <div class="connection-item">관점 <span class="connection-arrow">↔</span> 관점</div>
         </div>
-        <blockquote>
-          이 서비스는 관점을 추천하지 않습니다.<br>
-          관점과 관점 사이를 <strong>연결</strong>합니다.
-        </blockquote>
+        <p class="closing-quote"><strong>이해하고 존중할 수 있는 문화</strong>를 만드는 것이<br>우리가 바라는 방향입니다</p>
         <div class="logo-footer">AcrossView</div>
       </div>
     </section>
