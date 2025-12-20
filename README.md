@@ -21,6 +21,7 @@
 | 조민성 | [@m-seong0801](https://github.com/m-seong0801)|
 | 서지민 | [@mindolok](https://github.com/mindolok) |
 | 박혜진 | [@hjpark6463](https://github.com/hjpark6463-cyber)
+| 장준영 | [@junyoung9172](https://github.com/junyoung9172)
 
 ---
 
