@@ -17,7 +17,7 @@
 | 이름 | GitHub |
 |------|--------|
 | 박철완 | [@cheolwanpark](https://github.com/cheolwanpark) |
-| (팀원2) | |
+| 임동현 | [@Happ11quokka](https://github.com/Happ11quokka)|
 | (팀원3) | |
 
 ---
